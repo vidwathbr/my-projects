@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Crypto Portfolio Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* General page styling */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url("{{ url_for('static', filename='images/background.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: #ffffff;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header styling */
+        header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 150, 255, 0.5);
+        }
+
+        /* Main content area styling */
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Navigation styling */
+        nav {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            font-weight: 500;
+            padding: 15px 24px;
+            border: 1px solid rgba(0, 150, 255, 0.3);
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 150, 255, 0.1);
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        nav a:hover::before {
+            transform: translateX(100%);
+        }
+
+        nav a:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 150, 255, 0.2);
+            background: #ffffff;
+        }
+
+        nav a i {
+            font-size: 1.2em;
+            transition: transform 0.3s ease;
+        }
+
+        nav a:hover i {
+            transform: scale(1.2);
+        }
+
+        /* Message box styling */
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .messages ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .messages li {
+            margin: 12px 0;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95em;
+            backdrop-filter: blur(4px);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .success {
+            background-color: rgba(52, 211, 153, 0.2);
+            color: #ffffff;
+            border-left: 5px solid #34D399;
+        }
+
+        .error {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #551c1c;
+            border-left: 5px solid #EF4444;
+        }
+
+        /* User ID display styling */
+        .user-id {
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 1.1em;
+            color: #5d1212;
+            background: rgba(16, 185, 129, 0.2);
+            border-left: 5px solid #10B981;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .user-id i {
+            font-size: 1.2em;
+            color: #10B981;
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            text-align: center;
+            margin: 40px 0;
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-message::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .welcome-message h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+        }
+
+        .welcome-message p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            main {
+                margin: 15px;
+                padding: 20px;
+            }
+
+            nav {
+                flex-direction: column;
+            }
+
+            nav a {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .welcome-message h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-coins"></i> Crypto Portfolio Management</h1>
+    </header>
+    <main>
+        {% if not user_id %}
+        <div class="welcome-message">
+            <h2>Welcome to Your Crypto Journey</h2>
+            <p>Track your cryptocurrency investments, monitor market trends, and manage your portfolio with our comprehensive platform.</p>
+        </div>
+        {% endif %}
+
+        <nav>
+            {% if not user_id %}
+                <a href="{{ url_for('login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                <a href="{{ url_for('create_user') }}"><i class="fas fa-user-plus"></i> Create User</a>
+            {% else %}
+                <a href="{{ url_for('view_wallet') }}"><i class="fas fa-wallet"></i> View Wallet</a>
+                <a href="{{ url_for('create_portfolio') }}"><i class="fas fa-plus-circle"></i> Create Portfolio</a>
+                <a href="{{ url_for('view_portfolios') }}"><i class="fas fa-folder-open"></i> View Portfolios</a>
+                <a href="{{ url_for('create_transaction') }}"><i class="fas fa-exchange-alt"></i> Create Transaction</a>
+                <a href="{{ url_for('view_transactions') }}"><i class="fas fa-history"></i> View Transactions</a>
+                <a href="{{ url_for('view_cryptocurrencies') }}"><i class="fas fa-coins"></i> View Cryptocurrencies</a>
+                <a href="{{ url_for('view_market_data') }}"><i class="fas fa-chart-line"></i> View Market Data</a>
+                <a href="{{ url_for('watchlist') }}"><i class="fas fa-star"></i> Watchlist</a>
+                <a href="{{ url_for('view_users') }}"><i class="fas fa-users"></i> View Users</a>
+                <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            {% endif %}
+        </nav>
+
+        <div class="messages">
+            {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                    <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        {% if user_id %}
+            <div class="user-id">
+                <i class="fas fa-user"></i> Logged in as User ID: {{ user_id }}
+            </div>
+        {% endif %}
+    </main>
+</body>
+</html>

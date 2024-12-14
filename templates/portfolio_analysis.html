@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio Analysis</title>
+</head>
+<body>
+    <h1>Portfolio Analysis</h1>
+    <h2>Total Invested: {{ total_invested }}</h2>
+    <h2>Total Value: {{ total_value }}</h2>
+    <h2>Net Profit/Loss: {{ net_profit_loss }}</h2>
+    
+    <h3>Transaction History:</h3>
+    <table>
+        <tr>
+            <th>Transaction Type</th>
+            <th>Quantity</th>
+            <th>Price at Transaction</th>
+            <th>Total Value</th>
+            <th>Time of Transaction</th>
+        </tr>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.transaction_type }}</td>
+            <td>{{ transaction.quantity }}</td>
+            <td>{{ transaction.price_at_transaction }}</td>
+            <td>{{ transaction.total_value }}</td>
+            <td>{{ transaction.time_of_transaction }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

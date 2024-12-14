@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Transaction</title>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #059669;
+            --danger-color: #dc2626;
+            --background-color: #f3f4f6;
+            --card-background: #ffffff;
+            --text-color: #1f2937;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.063);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #2c3e50;
+            box-shadow: 0 0 5px rgba(44, 62, 80, 0.3);
+        }
+
+        .total-value {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .total-value span {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .navigation {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .navigation a {
+            flex: 1;
+        }
+
+        .info-box {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ffffff;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create Transaction</h1>
+        </div>
+
+        <div class="card">
+            <form action="{{ url_for('create_transaction') }}" method="post" id="transactionForm">
+                <div class="form-group">
+                    <label for="portfolio_id">
+                        <i class="fas fa-folder"></i> Portfolio
+                    </label>
+                    <select name="portfolio_id" id="portfolio_id" required>
+                        {% for portfolio in portfolios %}
+                            <option value="{{ portfolio.portfolio_id }}">{{ portfolio.portfolio_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="crypto_id">
+                        <i class="fas fa-coins"></i> Cryptocurrency
+                    </label>
+                    <select name="crypto_id" id="crypto_id" required onchange="fetchCryptoPrice(this.value)">
+                        {% for crypto in cryptocurrencies %}
+                            <option value="{{ crypto.crypto_id }}" data-name="{{ crypto.name }}">{{ crypto.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="loading" id="priceLoading">
+                        <i class="fas fa-spinner"></i> Fetching current price...
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">
+                        <i class="fas fa-calculator"></i> Quantity
+                    </label>
+                    <input type="number" step="0.00000001" name="quantity" id="quantity" required 
+                           oninput="calculateTotal()">
+                </div>
+
+                <div class="form-group">
+                    <label for="transaction_type">
+                        <i class="fas fa-exchange-alt"></i> Transaction Type
+                    </label>
+                    <select name="transaction_type" id="transaction_type" required>
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="price_at_transaction">
+                        <i class="fas fa-tag"></i> Price at Transaction
+                    </label>
+                    <input type="number" step="0.01" name="price_at_transaction" id="price_at_transaction" 
+                           required oninput="calculateTotal()">
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i>
+                        Current market price will be automatically fetched
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="wallet_id">
+                        <i class="fas fa-wallet"></i> Select Wallet
+                    </label>
+                    <select name="wallet_id" id="wallet_id" required>
+                        {% for wallet in wallets %}
+                            <option value="{{ wallet.wallet_id }}">Wallet Balance: ${{ "%.2f"|format(wallet.balance) }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="total-value">
+                    <i class="fas fa-money-bill-wave"></i> Total Value: 
+                    <span id="total_value">$0.00</span>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Create Transaction
+                </button>
+            </form>
+        </div>
+
+        <div class="navigation">
+            <a href="{{ url_for('view_portfolios') }}" class="btn btn-secondary">
+                <i class="fas fa-folder"></i> Back to Portfolios
+            </a>
+            <a href="{{ url_for('view_market_data') }}" class="btn btn-secondary">
+                <i class="fas fa-chart-line"></i> View Market Data
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                <i class="fas fa-home"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <script>
+        async function fetchCryptoPrice(cryptoId) {
+            const loadingElement = document.getElementById('priceLoading');
+            const priceInput = document.getElementById('price_at_transaction');
+            
+            try {
+                loadingElement.style.display = 'flex';
+                const select = document.getElementById('crypto_id');
+                const cryptoName = select.options[select.selectedIndex].getAttribute('data-name');
+                
+                const response = await fetch(`/get_crypto_price/${cryptoName}`);
+                const data = await response.json();
+                
+                if (data.price) {
+                    priceInput.value = data.price;
+                    calculateTotal();
+                } else {
+                    console.error('Price not found in response');
+                }
+            } catch (error) {
+                console.error('Error fetching price:', error);
+            } finally {
+                loadingElement.style.display = 'none';
+            }
+        }
+
+        function calculateTotal() {
+            const quantity = document.getElementById('quantity').value;
+            const price = document.getElementById('price_at_transaction').value;
+            const totalValue = quantity * price;
+            
+            document.getElementById('total_value').textContent = 
+                '$' + (isNaN(totalValue) ? '0.00' : totalValue.toFixed(2));
+        }
+
+        // Calculate initial total and fetch initial price on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const cryptoId = document.getElementById('crypto_id').value;
+            if (cryptoId) {
+                fetchCryptoPrice(cryptoId);
+            }
+            calculateTotal();
+        });
+    </script>
+</body>
+</html>

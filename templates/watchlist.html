@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Watchlist</title>
+    <style>
+        /* General page styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.063);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: separate;
+            border-spacing: 0;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border-right: 1px solid #dee2e6;
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            font-weight: 500;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Price styling */
+        .price-up {
+            color: #2ecc71;
+            font-weight: 500;
+        }
+
+        .price-down {
+            color: #e74c3c;
+            font-weight: 500;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-change {
+            font-size: 0.85em;
+            padding: 3px 8px;
+            border-radius: 3px;
+            background-color: #f8f9fa;
+        }
+
+        /* Button styling */
+        .remove-button {
+            background-color: #2c3e50;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .last-updated {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background-color: #2c3e50;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        p {
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .empty-message {
+            color: #ffffff;
+            text-align: center;
+            font-size: 1.2em;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .empty-message a {
+            color: #3498db;
+            text-decoration: underline;
+            font-weight: bold;
+            background: none;
+            padding: 0;
+            margin: 0;
+            display: inline;
+        }
+
+        .empty-message a:hover {
+            color: #2980b9;
+            transform: none;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Watchlist</h1>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% if watchlist_items %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Cryptocurrency</th>
+                    <th>Current Price</th>
+                    <th>Last Updated</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in watchlist_items %}
+                <tr>
+                    <td>{{ item.crypto_name }}</td>
+                    <td>
+                        {% if item.current_price %}
+                            ${{ "%.2f"|format(item.current_price) }}
+                        {% else %}
+                            No price data
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.last_updated %}
+                            <span class="last-updated">
+                                {{ item.last_updated.strftime('%Y-%m-%d %H:%M:%S') }}
+                            </span>
+                        {% else %}
+                            No data
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="{{ url_for('remove_from_watchlist', preference_id=item.preference_id) }}" method="POST">
+                            <button type="submit" class="remove-button">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-message">
+            Your watchlist is empty. Add some cryptocurrencies from the 
+            <a href="{{ url_for('view_cryptocurrencies') }}">cryptocurrencies page</a>.
+        </div>
+    {% endif %}
+
+    <p><a href="{{ url_for('home') }}">Back to Home</a></p>
+</body>
+</html> 

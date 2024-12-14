@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h2 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.063);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input, select {
+            margin-bottom: 15px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 10px;
+            list-style-type: none;
+            border-radius: 5px;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Button styles */
+        button {
+            padding: 10px 15px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn {
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Container for buttons */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* Label for admin password field */
+        #admin_password_label {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Create User</h2>
+
+<!-- Display flash messages -->
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <ul class="flash-messages">
+        {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <label for="role">Role:</label>
+    <select id="role" name="role">
+        <option value="standard_user">Standard User</option>
+        <option value="admin">Admin</option>
+    </select>
+
+    <label for="admin_password" id="admin_password_label" style="display:none;">Admin Password:</label>
+    <input type="password" name="admin_password" id="admin_password" placeholder="Admin Password" style="display:none;">
+
+    <!-- Button container for better alignment -->
+    <div class="button-container">
+        <button type="submit">Create User</button>
+        <a href="/home" class="btn">Back to Home</a>
+    </div>
+</form>
+
+<script>
+    document.getElementById('role').addEventListener('change', function() {
+        var adminPasswordField = document.getElementById('admin_password');
+        var adminPasswordLabel = document.getElementById('admin_password_label');
+        if (this.value === 'admin') {
+            adminPasswordField.style.display = 'block';
+            adminPasswordLabel.style.display = 'block';
+        } else {
+            adminPasswordField.style.display = 'none';
+            adminPasswordLabel.style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>

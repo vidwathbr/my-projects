@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Cryptocurrency</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('../static/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.063);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        label {
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #10b981;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Links */
+        a {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        a:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+    </style>
+</head>
+<body>
+
+<h1>Add Cryptocurrency</h1>
+
+<!-- Add Cryptocurrency Form -->
+<form method="POST">
+    <label for="name">Cryptocurrency Name:</label>
+    <input type="text" name="name" id="name" required>
+    <button type="submit">Add Cryptocurrency</button>
+</form>
+
+<!-- Links -->
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{{ url_for('view_cryptocurrencies') }}">View Cryptocurrencies</a>
+    <a href="{{ url_for('home') }}">Back to Home</a>
+</div>
+
+</body>
+</html>
